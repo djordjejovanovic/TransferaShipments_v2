@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using TransferaShipments.Domain.Entities;
 using TransferaShipments.Domain.Enums;
+using TransferaShipments.Persistence.Repositories;
 
 namespace AppServices.UseCases
 {
