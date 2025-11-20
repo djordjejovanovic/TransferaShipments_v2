@@ -4,7 +4,7 @@ VisualStudioVersion = 17.4.33705.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0001}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0002}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppServices", "Core\AppServices.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0002}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0003}"
 EndProject
@@ -47,5 +47,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DE795F35-2246-4AF5-A7EC-C5EDD4BA1DE1}
 	EndGlobalSection
 EndGlobal
