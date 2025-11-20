@@ -17,15 +17,15 @@ public class ShipmentService : IShipmentService
 
     public async Task<Shipment> CreateAsync(ShipmentCreateDto dto)
     {
-        var shipment = new Shipment
-        {
-            ReferenceNumber = dto.ReferenceNumber,
-            Sender = dto.Sender,
-            Recipient = dto.Recipient,
-            CreatedAt = DateTime.UtcNow,
-            Status = ShipmentStatus.Created
-        };
-        return await _repo.AddAsync(shipment);
+        //var shipment = new Shipment
+        //{
+        //    ReferenceNumber = dto.ReferenceNumber,
+        //    Sender = dto.Sender,
+        //    Recipient = dto.Recipient,
+        //    CreatedAt = DateTime.UtcNow,
+        //    Status = ShipmentStatus.Created
+        //};
+        //return await _repo.AddAsync(shipment);
     }
 
     public async Task<IEnumerable<Shipment>> GetAllAsync() => await _repo.GetAllAsync();

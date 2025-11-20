@@ -3,6 +3,8 @@ using TransferaShipments_v2.Core.DTOs;
 using TransferaShipments_v2.Core.Services;
 using TransferaShipments_v2.BlobStorage.Services;
 using TransferaShipments_v2.ServiceBus.Services;
+using MediatR;
+using AppServices.UseCases;
 
 namespace TransferaShipments_v2.App.Controllers;
 
@@ -10,10 +12,13 @@ namespace TransferaShipments_v2.App.Controllers;
 [Route("api/[controller]")]
 public class ShipmentsController : ControllerBase
 {
+    // ne treba ti nista sem mediatora ovde
     private readonly IShipmentService _shipmentService;
     private readonly IBlobService _blobService;
     private readonly IServiceBusPublisher _busPublisher;
     private readonly IConfiguration _configuration;
+
+    private readonly IMediator _mediator;
 
     public ShipmentsController(
         IShipmentService shipmentService,
@@ -21,17 +26,19 @@ public class ShipmentsController : ControllerBase
         IServiceBusPublisher busPublisher,
         IConfiguration configuration)
     {
-        _shipmentService = shipmentService;
-        _blobService = blobService;
-        _busPublisher = busPublisher;
-        _configuration = configuration;
+        //_shipmentService = shipmentService;
+        //_blobService = blobService;
+        //_busPublisher = busPublisher;
+        //_configuration = configuration;
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ShipmentCreateDto dto)
     {
-        var shipment = await _shipmentService.CreateAsync(dto);
-        return CreatedAtAction(nameof(GetById), new { id = shipment.Id }, shipment);
+        var request = new CreateShipmentRequest(dto.ReferenceNumber, dto.Sender, dto.Recipient);
+        var response = await _mediator.Send(request);
+
+        return CreatedAtAction(nameof(GetById), response);
     }
 
     [HttpGet]
