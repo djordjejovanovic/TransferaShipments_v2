@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using TransferaShipments.Core.DTOs;
-using TransferaShipments.Core.Services;
 using TransferaShipments.BlobStorage.Services;
 using TransferaShipments.ServiceBus.Services;
 using MediatR;
@@ -12,20 +11,17 @@ namespace TransferaShipments.App.Controllers;
 [Route("api/[controller]")]
 public class ShipmentsController : ControllerBase
 {
-    private readonly IShipmentService _shipmentService;
     private readonly IBlobService _blobService;
     private readonly IServiceBusPublisher _busPublisher;
     private readonly IConfiguration _configuration;
     private readonly IMediator _mediator;
 
     public ShipmentsController(
-        IShipmentService shipmentService,
         IBlobService blobService,
         IServiceBusPublisher busPublisher,
         IConfiguration configuration,
         IMediator mediator)
     {
-        _shipmentService = shipmentService;
         _blobService = blobService;
         _busPublisher = busPublisher;
         _configuration = configuration;
@@ -35,28 +31,27 @@ public class ShipmentsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ShipmentCreateDto dto)
     {
-        //TODO : Zameniti sve sa _shipmentService sa drugim servisom koji koristi MediatR
         var request = new CreateShipmentRequest(dto.ReferenceNumber, dto.Sender, dto.Recipient);
         var response = await _mediator.Send(request);
 
-        return CreatedAtAction(nameof(GetById), response);
+        return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        //TODO : Koristiti MediatR umesto direktnog poziva servisa
-        var list = await _shipmentService.GetAllAsync();
-        return Ok(list);
+        var request = new GetAllShipmentsRequest();
+        var response = await _mediator.Send(request);
+        return Ok(response.Shipments);
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        //TODO : Koristiti MediatR umesto direktnog poziva servisa
-        var shipment = await _shipmentService.GetByIdAsync(id);
-        if (shipment == null) return NotFound();
-        return Ok(shipment);
+        var request = new GetShipmentByIdRequest(id);
+        var response = await _mediator.Send(request);
+        if (response.Shipment == null) return NotFound();
+        return Ok(response.Shipment);
     }
 
     [HttpPost("{id:int}/documents")]
@@ -64,9 +59,10 @@ public class ShipmentsController : ControllerBase
     {
         if (file == null || file.Length == 0) return BadRequest("File is required");
 
-        //TODO : Koristiti MediatR umesto direktnog poziva servisa
-        var existing = await _shipmentService.GetByIdAsync(id);
-        if (existing == null) return NotFound();
+        // Check if shipment exists using MediatR
+        var checkRequest = new GetShipmentByIdRequest(id);
+        var checkResponse = await _mediator.Send(checkRequest);
+        if (checkResponse.Shipment == null) return NotFound();
 
         // Upload to blob
         var container = _configuration["Azure:BlobContainerName"] ?? "shipments-documents";
@@ -74,9 +70,13 @@ public class ShipmentsController : ControllerBase
         using var stream = file.OpenReadStream();
         var blobUrl = await _blobService.UploadAsync(container, blobName, stream, file.ContentType);
 
-        // Save metadata & update status & send message
-        //TODO : Koristiti MediatR umesto direktnog poziva servisa
-        await _shipmentService.AddDocumentAsync(id, blobName, blobUrl);
+        // Save metadata & update status using MediatR
+        var uploadRequest = new UploadDocumentRequest(id, blobName, blobUrl);
+        var uploadResponse = await _mediator.Send(uploadRequest);
+        
+        if (!uploadResponse.Success) return NotFound();
+
+        // Send message to service bus
         await _busPublisher.PublishDocumentToProcessAsync(id, blobName);
 
         return Accepted(new { blobName, blobUrl });

@@ -7,6 +7,7 @@ using TransferaShipments.ServiceBus.Services;
 using TransferaShipments.ServiceBus.HostedServices;
 using TransferaShipments.Persistence.Services;
 using TransferaShipments.Persistence.Repositories;
+using AppServices.UseCases;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // DI - Persistence / Core
 builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
 builder.Services.AddScoped<IShipmentService, ShipmentService>();
+
+// MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateShipmentUseCase>());
 
 // Blob Storage
 builder.Services.AddSingleton<IBlobService, BlobService>();
