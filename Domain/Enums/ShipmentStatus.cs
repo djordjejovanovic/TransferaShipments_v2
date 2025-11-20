@@ -1,4 +1,4 @@
-namespace TransferaShipments_v2.Domain.Enums;
+namespace TransferaShipments.Domain.Enums;
 
 public enum ShipmentStatus
 {

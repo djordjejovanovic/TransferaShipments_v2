@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using TransferaShipments_v2.Domain.Entities;
+using TransferaShipments.Domain.Entities;
+using TransferaShipments.Persistence.Data;
 
-namespace TransferaShipments_v2.Persistence.Repositories;
+namespace TransferaShipments.Persistence.Repositories;
 
 public class ShipmentRepository : IShipmentRepository
 {

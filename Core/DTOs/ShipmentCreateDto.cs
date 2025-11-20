@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace TransferaShipments_v2.Core.DTOs;
+namespace TransferaShipments.Core.DTOs;
 
 public class ShipmentCreateDto
 {

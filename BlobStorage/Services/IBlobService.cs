@@ -1,4 +1,4 @@
-namespace TransferaShipments_v2.BlobStorage.Services;
+namespace TransferaShipments.BlobStorage.Services;
 
 public interface IBlobService
 {

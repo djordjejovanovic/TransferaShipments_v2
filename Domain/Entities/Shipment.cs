@@ -1,6 +1,6 @@
-using TransferaShipments_v2.Domain.Enums;
+using TransferaShipments.Domain.Enums;
 
-namespace TransferaShipments_v2.Domain.Entities;
+namespace TransferaShipments.Domain.Entities;
 
 public class Shipment
 {

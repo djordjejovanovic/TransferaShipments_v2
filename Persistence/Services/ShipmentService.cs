@@ -1,10 +1,10 @@
-using TransferaShipments_v2.Core.DTOs;
-using TransferaShipments_v2.Core.Services;
-using TransferaShipments_v2.Domain.Entities;
-using TransferaShipments_v2.Domain.Enums;
-using TransferaShipments_v2.Persistence.Repositories;
+using TransferaShipments.Core.DTOs;
+using TransferaShipments.Core.Services;
+using TransferaShipments.Domain.Entities;
+using TransferaShipments.Domain.Enums;
+using TransferaShipments.Persistence.Repositories;
 
-namespace TransferaShipments_v2.Persistence.Services;
+namespace TransferaShipments.Persistence.Services;
 
 public class ShipmentService : IShipmentService
 {

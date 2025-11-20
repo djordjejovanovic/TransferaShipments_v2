@@ -1,8 +1,9 @@
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Microsoft.Extensions.Configuration;
 
-namespace TransferaShipments_v2.BlobStorage.Services;
+namespace TransferaShipments.BlobStorage.Services;
 
 public class BlobService : IBlobService
 {

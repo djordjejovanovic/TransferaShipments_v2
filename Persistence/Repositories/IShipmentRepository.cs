@@ -1,6 +1,6 @@
-using TransferaShipments_v2.Domain.Entities;
+using TransferaShipments.Domain.Entities;
 
-namespace TransferaShipments_v2.Persistence.Repositories;
+namespace TransferaShipments.Persistence.Repositories;
 
 public interface IShipmentRepository
 {

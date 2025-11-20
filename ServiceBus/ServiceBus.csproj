@@ -3,16 +3,14 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BlobStorage\BlobStorage.csproj" />
     <ProjectReference Include="..\Persistence\Persistence.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.24.0" />
+	<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.20.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.0" />
   </ItemGroup>
 
 </Project>

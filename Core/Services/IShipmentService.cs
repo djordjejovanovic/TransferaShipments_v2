@@ -1,7 +1,7 @@
-using TransferaShipments_v2.Domain.Entities;
-using TransferaShipments_v2.Core.DTOs;
+using TransferaShipments.Domain.Entities;
+using TransferaShipments.Core.DTOs;
 
-namespace TransferaShipments_v2.Core.Services;
+namespace TransferaShipments.Core.Services;
 
 public interface IShipmentService
 {

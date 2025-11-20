@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using TransferaShipments_v2.Core.DTOs;
-using TransferaShipments_v2.Core.Services;
-using TransferaShipments_v2.BlobStorage.Services;
-using TransferaShipments_v2.ServiceBus.Services;
+using TransferaShipments.Core.DTOs;
+using TransferaShipments.Core.Services;
+using TransferaShipments.BlobStorage.Services;
+using TransferaShipments.ServiceBus.Services;
 
-namespace TransferaShipments_v2.App.Controllers;
+namespace TransferaShipments.App.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

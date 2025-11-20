@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using TransferaShipments_v2.Persistence.Data;
-using TransferaShipments_v2.Persistence.Repositories;
-using TransferaShipments_v2.Core.Services;
-using TransferaShipments_v2.BlobStorage.Services;
-using TransferaShipments_v2.ServiceBus.Services;
-using TransferaShipments_v2.ServiceBus.HostedServices;
+using TransferaShipments.Persistence.Data;
+using TransferaShipments.Persistence.Repositories;
+using TransferaShipments.Core.Services;
+using TransferaShipments.BlobStorage.Services;
+using TransferaShipments.ServiceBus.Services;
+using TransferaShipments.ServiceBus.HostedServices;
+using TransferaShipments.Persistence.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,4 +46,5 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 
+using (var scope = app.Services.CreateScope()) { var db = scope.ServiceProvider.GetRequiredService<AppDbContext>(); db.Database.EnsureCreated(); }
 app.Run();

@@ -1,10 +1,12 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Azure.Messaging.ServiceBus;
-using TransferaShipments_v2.BlobStorage.Services;
-using TransferaShipments_v2.Persistence.Repositories;
-using TransferaShipments_v2.Core.Services;
+using TransferaShipments.BlobStorage.Services;
+using TransferaShipments.Persistence.Repositories;
+using TransferaShipments.Core.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
-namespace TransferaShipments_v2.ServiceBus.HostedServices;
+namespace TransferaShipments.ServiceBus.HostedServices;
 
 public class DocumentProcessorHostedService : IHostedService, IAsyncDisposable
 {

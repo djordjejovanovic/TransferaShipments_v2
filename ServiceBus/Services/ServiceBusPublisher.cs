@@ -1,8 +1,9 @@
 using Azure.Messaging.ServiceBus;
+using Microsoft.Extensions.Configuration;
 using System.Text.Json;
-using TransferaShipments_v2.ServiceBus.Services;
+using TransferaShipments.ServiceBus.Services;
 
-namespace TransferaShipments_v2.ServiceBus.Services;
+namespace TransferaShipments.ServiceBus.Services;
 
 public class ServiceBusPublisher : IServiceBusPublisher
 {

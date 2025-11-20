@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using TransferaShipments_v2.Domain.Entities;
+using TransferaShipments.Domain.Entities;
 
-namespace TransferaShipments_v2.Persistence.Data;
+namespace TransferaShipments.Persistence.Data;
 
 public class AppDbContext : DbContext
 {

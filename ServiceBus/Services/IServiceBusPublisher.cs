@@ -1,4 +1,4 @@
-namespace TransferaShipments_v2.ServiceBus.Services;
+namespace TransferaShipments.ServiceBus.Services;
 
 public interface IServiceBusPublisher
 {
