@@ -5,6 +5,8 @@ using TransferaShipments_v2.Persistence.Repositories;
 
 namespace AppServices.UseCases
 {
+    // ove recorde mozes prebaciti u poseban folder DTOs ako zelis ili boundary moze isto da bude ime foldera. Svejedno je.
+    // takodje je ok praksa da stave npr u folder UseCase/CreateShipment/CreateShipmentRequest.cs i  UseCase/CreateShipmentResponse.cs i  UseCase/CreateShipmentUseCase.cs
     public record CreateShipmentRequest(string ReferenceNumber, string Sender, string Recipient) : IRequest<CreateShipmentResponse>;
 
     public record CreateShipmentResponse(int Id);

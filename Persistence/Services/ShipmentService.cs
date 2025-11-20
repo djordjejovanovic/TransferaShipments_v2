@@ -17,6 +17,8 @@ public class ShipmentService : IShipmentService
 
     public async Task<Shipment> CreateAsync(ShipmentCreateDto dto)
     {
+        // Svaku metodu ovog servisa implementirati kao zaseban use case u appServices projektu.
+
         //var shipment = new Shipment
         //{
         //    ReferenceNumber = dto.ReferenceNumber,
