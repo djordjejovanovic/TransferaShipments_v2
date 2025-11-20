@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using Azure.Messaging.ServiceBus;
 using TransferaShipments.BlobStorage.Services;
-using TransferaShipments.Persistence.Repositories;
 using TransferaShipments.Core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;

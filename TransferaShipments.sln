@@ -2,17 +2,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33705.106
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0001}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransferaShipments.App", "App\TransferaShipments.App.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0001}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0002}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransferaShipments.Core", "Core\TransferaShipments.Core.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0002}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0003}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransferaShipments.Domain", "Domain\TransferaShipments.Domain.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0003}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Persistence\Persistence.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0004}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransferaShipments.Persistence", "Persistence\TransferaShipments.Persistence.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0004}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlobStorage", "BlobStorage\BlobStorage.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0005}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransferaShipments.BlobStorage", "BlobStorage\TransferaShipments.BlobStorage.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0005}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBus", "ServiceBus\ServiceBus.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0006}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransferaShipments.ServiceBus", "ServiceBus\TransferaShipments.ServiceBus.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0006}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

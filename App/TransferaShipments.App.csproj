@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\Persistence\Persistence.csproj" />
-    <ProjectReference Include="..\BlobStorage\BlobStorage.csproj" />
-    <ProjectReference Include="..\ServiceBus\ServiceBus.csproj" />
+    <ProjectReference Include="..\Core\TransferaShipments.Core.csproj" />
+    <ProjectReference Include="..\Domain\TransferaShipments.Domain.csproj" />
+    <ProjectReference Include="..\Persistence\TransferaShipments.Persistence.csproj" />
+    <ProjectReference Include="..\BlobStorage\TransferaShipments.BlobStorage.csproj" />
+    <ProjectReference Include="..\ServiceBus\TransferaShipments.ServiceBus.csproj" />
   </ItemGroup>
 
   <ItemGroup>
