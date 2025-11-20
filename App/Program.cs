@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using TransferaShipments.Persistence.Data;
-using TransferaShipments.Persistence.Repositories;
+using TransferaShipments.Core.Repositories;
 using TransferaShipments.Core.Services;
 using TransferaShipments.BlobStorage.Services;
 using TransferaShipments.ServiceBus.Services;
 using TransferaShipments.ServiceBus.HostedServices;
 using TransferaShipments.Persistence.Services;
+using TransferaShipments.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 

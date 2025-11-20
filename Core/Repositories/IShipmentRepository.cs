@@ -1,6 +1,6 @@
 using TransferaShipments.Domain.Entities;
 
-namespace TransferaShipments.Persistence.Repositories;
+namespace TransferaShipments.Core.Repositories;
 
 public interface IShipmentRepository
 {
