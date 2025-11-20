@@ -1,6 +1,8 @@
 using TransferaShipments.Domain.Entities;
 using TransferaShipments.Domain.Enums;
-using TransferaShipments.Persistence.Repositories;
+using TransferaShipments.Core.Repositories;
+using TransferaShipments.Core.Services;
+using TransferaShipments.Core.DTOs;
 
 namespace TransferaShipments.Persistence.Services;
 
