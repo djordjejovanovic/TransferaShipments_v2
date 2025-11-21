@@ -9,7 +9,6 @@ using TransferaShipments.Persistence.Repositories;
 using TransferaShipments.Persistence.Services;
 using TransferaShipments.ServiceBus.HostedServices;
 using TransferaShipments.ServiceBus.Services;
-using TransferaShipments_v2.ServiceBus.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

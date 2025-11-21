@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using TransferaShipments.ServiceBus.Services;
 
-namespace TransferaShipments_v2.ServiceBus.Services;
+namespace TransferaShipments.ServiceBus.Services;
 
 public class NoOpServiceBusPublisher : IServiceBusPublisher
 {
