@@ -1,5 +1,6 @@
 using AppServices.UseCases;
 using Microsoft.EntityFrameworkCore;
+using TransferaShipments.App.Swagger;
 using TransferaShipments.BlobStorage.Services;
 using TransferaShipments.Core.Repositories;
 using TransferaShipments.Core.Services;
@@ -48,7 +49,10 @@ else
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.OperationFilter<FileUploadOperationFilter>();
+});
 
 var app = builder.Build();
 
