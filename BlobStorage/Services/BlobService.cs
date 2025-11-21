@@ -32,7 +32,7 @@ public class BlobService : IBlobService
     private BlobContainerClient GetContainer(string container)
     {
         var conn = _configuration.GetConnectionString("AzureBlob");
-        var client = new BlobServiceClient(conn);
+        var client = CreateClient(conn ?? "");
         var containerClient = client.GetBlobContainerClient(container);
         containerClient.CreateIfNotExists(PublicAccessType.None);
         return containerClient;

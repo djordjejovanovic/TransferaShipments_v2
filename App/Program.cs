@@ -32,19 +32,16 @@ builder.Services.AddSingleton<IBlobService, BlobService>();
 
 // Service Bus
 var serviceBusConn = builder.Configuration.GetConnectionString("ServiceBus");
-if (!string.IsNullOrWhiteSpace(serviceBusConn))
+if (!string.IsNullOrWhiteSpace(serviceBusConn) && !serviceBusConn.Contains("your-servicebus"))
 {
     builder.Services.AddSingleton<IServiceBusPublisher, ServiceBusPublisher>();
     builder.Services.AddHostedService<DocumentProcessorHostedService>();
 }
 else
 {
-    // nema SB konfiguracije — ne podižemo hosted consumer i koristimo NoOp publisher
+    // nema SB konfiguracije â€“ ne podiÅ¾emo hosted consumer i koristimo NoOp publisher
     builder.Services.AddSingleton<IServiceBusPublisher, NoOpServiceBusPublisher>();
 }
-
-// Hosted service (consumer)
-builder.Services.AddHostedService<DocumentProcessorHostedService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
