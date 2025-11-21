@@ -1,13 +1,14 @@
+using AppServices.UseCases;
 using Microsoft.EntityFrameworkCore;
-using TransferaShipments.Persistence.Data;
+using TransferaShipments.BlobStorage.Services;
 using TransferaShipments.Core.Repositories;
 using TransferaShipments.Core.Services;
-using TransferaShipments.BlobStorage.Services;
-using TransferaShipments.ServiceBus.Services;
-using TransferaShipments.ServiceBus.HostedServices;
-using TransferaShipments.Persistence.Services;
+using TransferaShipments.Persistence.Data;
 using TransferaShipments.Persistence.Repositories;
-using AppServices.UseCases;
+using TransferaShipments.Persistence.Services;
+using TransferaShipments.ServiceBus.HostedServices;
+using TransferaShipments.ServiceBus.Services;
+using TransferaShipments_v2.ServiceBus.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +31,17 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Cr
 builder.Services.AddSingleton<IBlobService, BlobService>();
 
 // Service Bus
-builder.Services.AddSingleton<IServiceBusPublisher, ServiceBusPublisher>();
+var serviceBusConn = builder.Configuration.GetConnectionString("ServiceBus");
+if (!string.IsNullOrWhiteSpace(serviceBusConn))
+{
+    builder.Services.AddSingleton<IServiceBusPublisher, ServiceBusPublisher>();
+    builder.Services.AddHostedService<DocumentProcessorHostedService>();
+}
+else
+{
+    // nema SB konfiguracije — ne podižemo hosted consumer i koristimo NoOp publisher
+    builder.Services.AddSingleton<IServiceBusPublisher, NoOpServiceBusPublisher>();
+}
 
 // Hosted service (consumer)
 builder.Services.AddHostedService<DocumentProcessorHostedService>();
