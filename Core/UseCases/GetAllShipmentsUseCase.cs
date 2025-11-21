@@ -4,9 +4,9 @@ using TransferaShipments.Core.Repositories;
 
 namespace AppServices.UseCases
 {
-    public record GetAllShipmentsRequest() : IRequest<GetAllShipmentsResponse>;
+    public record GetAllShipmentsRequest(int Page, int PageSize) : IRequest<GetAllShipmentsResponse>;
 
-    public record GetAllShipmentsResponse(IEnumerable<Shipment> Shipments);
+    public record GetAllShipmentsResponse(IEnumerable<Shipment> Shipments, int TotalCount);
 
     public class GetAllShipmentsUseCase : IRequestHandler<GetAllShipmentsRequest, GetAllShipmentsResponse>
     {
@@ -19,8 +19,9 @@ namespace AppServices.UseCases
 
         public async Task<GetAllShipmentsResponse> Handle(GetAllShipmentsRequest request, CancellationToken cancellationToken)
         {
-            var shipments = await _shipmentRepository.GetAllAsync();
-            return new GetAllShipmentsResponse(shipments);
+            var shipments = await _shipmentRepository.GetAllAsync(request.Page, request.PageSize);
+            var total = await _shipmentRepository.GetCountAsync();
+            return new GetAllShipmentsResponse(shipments, total);
         }
     }
 }

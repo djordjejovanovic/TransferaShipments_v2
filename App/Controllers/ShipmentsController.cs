@@ -43,19 +43,45 @@ public class ShipmentsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
+    // Pagination: page and pageSize as query parameters
     [HttpGet("GetAll")]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int page, [FromQuery] int pageSize)
     {
-        var request = new GetAllShipmentsRequest();
+        if (page <= 0)
+        {
+            page = 1;
+        }
+
+        var maxPageSize = 100;
+
+        if (pageSize <= 0)
+        {
+            pageSize = 5;
+        }
+
+        pageSize = Math.Min(pageSize, maxPageSize);
+
+        var request = new GetAllShipmentsRequest(page, pageSize);
 
         var response = await _mediator.Send(request);
 
-        if(response?.Shipments == null)
+        if (response?.Shipments == null)
         {
             return NotFound();
         }
 
-        return Ok(response.Shipments);
+        Response.Headers["X-Total-Count"] = response.TotalCount.ToString();
+
+        var result = new
+        {
+            Items = response.Shipments,
+            TotalCount = response.TotalCount,
+            Page = page,
+            PageSize = pageSize,
+            TotalPages = (int)Math.Ceiling(response.TotalCount / (double)pageSize)
+        };
+
+        return Ok(result);
     }
 
     [HttpGet("GetById/{id:int}")]
