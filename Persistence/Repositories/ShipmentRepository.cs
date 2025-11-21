@@ -24,18 +24,15 @@ public class ShipmentRepository : IShipmentRepository
         return await _db.Shipments.FirstOrDefaultAsync(s => s.Id == id);
     }
 
-    // originalna metoda (vraća sve) - ostavljena radi kompatibilnosti
+    // Original method (returns all) - kept for backward compatibility
     public async Task<IEnumerable<Shipment>> GetAllAsync()
     {
         return await _db.Shipments.OrderByDescending(s => s.CreatedAt).ToListAsync();
     }
 
-    // nova paginacija - efikasno u bazi
+    // New pagination method - efficient database query
     public async Task<IEnumerable<Shipment>> GetAllAsync(int page, int pageSize)
     {
-        if (page <= 0) page = 1;
-        if (pageSize <= 0) pageSize = 20;
-
         return await _db.Shipments
             .AsNoTracking()
             .OrderByDescending(s => s.CreatedAt)

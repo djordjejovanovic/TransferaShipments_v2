@@ -6,9 +6,9 @@ public interface IShipmentRepository
 {
     Task<Shipment> AddAsync(Shipment shipment);
     Task<Shipment?> GetByIdAsync(int id);
-    // originalna metoda (zadržana radi kompatibilnosti)
+    // Original method (kept for backward compatibility)
     Task<IEnumerable<Shipment>> GetAllAsync();
-    // nove metode za paginaciju
+    // New methods for pagination
     Task<IEnumerable<Shipment>> GetAllAsync(int page, int pageSize);
     Task<int> GetCountAsync();
     Task UpdateAsync(Shipment shipment);

@@ -43,7 +43,7 @@ public class ShipmentsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
-    // Paginacija: page i pageSize kao query parametri
+    // Pagination: page and pageSize as query parameters
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
