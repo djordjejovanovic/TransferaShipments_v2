@@ -35,14 +35,14 @@ public class FileUploadOperationFilter : IOperationFilter
                     {
                         Type = "object",
                         Properties = fileParameters.ToDictionary(
-                            p => p.Name ?? "file",
+                            p => p.Name!,
                             p => new OpenApiSchema
                             {
                                 Type = "string",
                                 Format = "binary"
                             }
                         ),
-                        Required = new HashSet<string>(fileParameters.Select(p => p.Name ?? "file"))
+                        Required = new HashSet<string>(fileParameters.Select(p => p.Name!))
                     }
                 }
             }
