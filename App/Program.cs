@@ -59,5 +59,19 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope()) { var db = scope.ServiceProvider.GetRequiredService<AppDbContext>(); db.Database.EnsureCreated(); }
+// Initialize database (with error handling)
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.EnsureCreated();
+        app.Logger.LogInformation("Database initialized successfully.");
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogWarning(ex, "Could not connect to database. The application will continue but database operations will fail.");
+    }
+}
+
 app.Run();
