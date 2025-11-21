@@ -32,19 +32,19 @@ builder.Services.AddSingleton<IBlobService, BlobService>();
 
 // Service Bus
 var serviceBusConn = builder.Configuration.GetConnectionString("ServiceBus");
-if (!string.IsNullOrWhiteSpace(serviceBusConn))
+var hasValidServiceBus = !string.IsNullOrWhiteSpace(serviceBusConn) 
+    && serviceBusConn.StartsWith("Endpoint=sb://", StringComparison.OrdinalIgnoreCase);
+
+if (hasValidServiceBus)
 {
     builder.Services.AddSingleton<IServiceBusPublisher, ServiceBusPublisher>();
     builder.Services.AddHostedService<DocumentProcessorHostedService>();
 }
 else
 {
-    // nema SB konfiguracije — ne podižemo hosted consumer i koristimo NoOp publisher
+    // nema SB konfiguracije â€“ ne podiÅ¾emo hosted consumer i koristimo NoOp publisher
     builder.Services.AddSingleton<IServiceBusPublisher, NoOpServiceBusPublisher>();
 }
-
-// Hosted service (consumer)
-builder.Services.AddHostedService<DocumentProcessorHostedService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -62,5 +62,19 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope()) { var db = scope.ServiceProvider.GetRequiredService<AppDbContext>(); db.Database.EnsureCreated(); }
+// Initialize database (with error handling)
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.EnsureCreated();
+        app.Logger.LogInformation("Database initialized successfully.");
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogWarning(ex, "Could not connect to database. The application will continue but database operations will fail.");
+    }
+}
+
 app.Run();
