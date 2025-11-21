@@ -52,12 +52,11 @@ public class ShipmentsController : ControllerBase
             page = 1;
         }
 
-        var defaultPageSize = 5;
         var maxPageSize = 100;
 
         if (pageSize <= 0)
         {
-            pageSize = defaultPageSize;
+            pageSize = 5;
         }
 
         pageSize = Math.Min(pageSize, maxPageSize);
