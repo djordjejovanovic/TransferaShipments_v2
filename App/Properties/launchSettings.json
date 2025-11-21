@@ -2,9 +2,11 @@
   "profiles": {
     "App": {
       "commandName": "Project",
+      "dotnetRunMessages": true,
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__AzureBlob": "UseDevelopmentStorage=true"
       },
       "applicationUrl": "https://localhost:52751;http://localhost:52752"
     }

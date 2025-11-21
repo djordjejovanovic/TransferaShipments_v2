@@ -3,6 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.4.33705.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0001}"
+	ProjectSection(ProjectDependencies) = postProject
+		{68986427-A001-4ECA-A951-AA20606DBE1B} = {68986427-A001-4ECA-A951-AA20606DBE1B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppServices", "Core\AppServices.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0002}"
 EndProject
@@ -13,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlobStorage", "BlobStorage\BlobStorage.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0005}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBus", "ServiceBus\ServiceBus.csproj", "{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0006}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azurite", "Azurite\Azurite.csproj", "{68986427-A001-4ECA-A951-AA20606DBE1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +49,10 @@ Global
 		{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0006}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0006}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B2C2A1B-8C3E-4B2F-A3F7-2E6D9D8E0006}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68986427-A001-4ECA-A951-AA20606DBE1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68986427-A001-4ECA-A951-AA20606DBE1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68986427-A001-4ECA-A951-AA20606DBE1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68986427-A001-4ECA-A951-AA20606DBE1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
