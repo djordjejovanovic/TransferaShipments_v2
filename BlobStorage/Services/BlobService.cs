@@ -22,7 +22,7 @@ public class BlobService : IBlobService
             // Construct the full Azurite connection string (Azurite uses the well-known devstoreaccount1)
             // This value works for default Azurite setup (when started on localhost:10000).
             var azuriteConn =
-                "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ5OmLlqUwJPLlmEtlCDXJ5OmLlqUwJPLlmEtlCDXJ5OmLlqUwJPLlmEtlCDXJ5Om==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;";
+                "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ5OUb9Q/2qjmreU+oiMTT+j6HjmQSlAvHBSoD6+MdVfn+BOvyFQA9QvwjkHQAUAicK5xCdvQ==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;";
             return new BlobServiceClient(azuriteConn);
         }
 

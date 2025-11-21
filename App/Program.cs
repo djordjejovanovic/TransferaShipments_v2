@@ -32,7 +32,10 @@ builder.Services.AddSingleton<IBlobService, BlobService>();
 
 // Service Bus
 var serviceBusConn = builder.Configuration.GetConnectionString("ServiceBus");
-if (!string.IsNullOrWhiteSpace(serviceBusConn) && !serviceBusConn.Contains("your-servicebus"))
+var hasValidServiceBus = !string.IsNullOrWhiteSpace(serviceBusConn) 
+    && serviceBusConn.StartsWith("Endpoint=sb://", StringComparison.OrdinalIgnoreCase);
+
+if (hasValidServiceBus)
 {
     builder.Services.AddSingleton<IServiceBusPublisher, ServiceBusPublisher>();
     builder.Services.AddHostedService<DocumentProcessorHostedService>();
