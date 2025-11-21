@@ -28,7 +28,7 @@ public class ShipmentsController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpPost]
+    [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] ShipmentCreateDto dto)
     {
         var request = new CreateShipmentRequest(dto.ReferenceNumber, dto.Sender, dto.Recipient);
@@ -37,7 +37,7 @@ public class ShipmentsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
-    [HttpGet]
+    [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
         var request = new GetAllShipmentsRequest();
@@ -45,7 +45,7 @@ public class ShipmentsController : ControllerBase
         return Ok(response.Shipments);
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("GetById/{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
         var request = new GetShipmentByIdRequest(id);
@@ -54,7 +54,7 @@ public class ShipmentsController : ControllerBase
         return Ok(response.Shipment);
     }
 
-    [HttpPost("{id:int}/documents")]
+    [HttpPost("UploadDocument/{id:int}")]
     public async Task<IActionResult> UploadDocument(int id, IFormFile file)
     {
         if (file == null || file.Length == 0) return BadRequest("File is required");
