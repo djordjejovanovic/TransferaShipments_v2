@@ -13,7 +13,9 @@ public class ShipmentRepository : IShipmentRepository
     public async Task<Shipment> AddAsync(Shipment shipment)
     {
         var ent = (await _db.Shipments.AddAsync(shipment)).Entity;
+
         await _db.SaveChangesAsync();
+  
         return ent;
     }
 
@@ -30,6 +32,7 @@ public class ShipmentRepository : IShipmentRepository
     public async Task UpdateAsync(Shipment shipment)
     {
         _db.Shipments.Update(shipment);
+        
         await _db.SaveChangesAsync();
     }
 

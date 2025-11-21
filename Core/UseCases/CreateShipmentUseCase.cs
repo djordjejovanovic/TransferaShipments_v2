@@ -11,8 +11,7 @@ namespace AppServices.UseCases
 
     public record CreateShipmentResponse(int Id);
 
-    public class CreateShipmentUseCase :
-        IRequestHandler<CreateShipmentRequest, CreateShipmentResponse>
+    public class CreateShipmentUseCase : IRequestHandler<CreateShipmentRequest, CreateShipmentResponse>
     {
         private readonly IShipmentRepository _shipmentRepository;
 

@@ -35,7 +35,11 @@ public class ShipmentService : IShipmentService
     public async Task AddDocumentAsync(int shipmentId, string blobName, string blobUrl)
     {
         var shipment = await _repo.GetByIdAsync(shipmentId);
-        if (shipment == null) throw new InvalidOperationException("Shipment not found");
+
+        if (shipment == null)
+        {
+            throw new InvalidOperationException("Shipment not found");
+        }
 
         shipment.LastDocumentBlobName = blobName;
         shipment.LastDocumentUrl = blobUrl;
@@ -47,9 +51,14 @@ public class ShipmentService : IShipmentService
     public async Task MarkProcessedAsync(int shipmentId)
     {
         var shipment = await _repo.GetByIdAsync(shipmentId);
-        if (shipment == null) throw new InvalidOperationException("Shipment not found");
+
+        if (shipment == null)
+        {
+            throw new InvalidOperationException("Shipment not found");
+        }
 
         shipment.Status = ShipmentStatus.Processed;
+
         await _repo.UpdateAsync(shipment);
     }
 }

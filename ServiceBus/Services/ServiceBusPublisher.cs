@@ -1,7 +1,6 @@
 using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json;
-using TransferaShipments.ServiceBus.Services;
 
 namespace TransferaShipments.ServiceBus.Services;
 
@@ -30,6 +29,7 @@ public class ServiceBusPublisher : IServiceBusPublisher
         };
 
         var msgBody = JsonSerializer.Serialize(payload);
+
         var msg = new ServiceBusMessage(msgBody)
         {
             Subject = "DocumentToProcess",

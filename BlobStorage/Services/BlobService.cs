@@ -1,4 +1,3 @@
-using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +16,7 @@ public class BlobService : IBlobService
     private BlobServiceClient CreateClient(string conn)
     {
         // Support the simple development flag (recommended for local Azurite)
-        if (!string.IsNullOrWhiteSpace(conn) && conn.Trim().Equals("UseDevelopmentStorage=true", StringComparison.OrdinalIgnoreCase))
+        if (!string.IsNullOrEmpty(conn) && conn.Trim().Equals("UseDevelopmentStorage=true", StringComparison.OrdinalIgnoreCase))
         {
             // Construct the full Azurite connection string (Azurite uses the well-known devstoreaccount1)
             // This value works for default Azurite setup (when started on localhost:10000).

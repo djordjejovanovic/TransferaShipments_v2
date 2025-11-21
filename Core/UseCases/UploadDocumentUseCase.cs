@@ -19,6 +19,7 @@ namespace AppServices.UseCases
         public async Task<UploadDocumentResponse> Handle(UploadDocumentRequest request, CancellationToken cancellationToken)
         {
             var shipment = await _shipmentRepository.GetByIdAsync(request.ShipmentId);
+            
             if (shipment == null)
             {
                 return new UploadDocumentResponse(false);

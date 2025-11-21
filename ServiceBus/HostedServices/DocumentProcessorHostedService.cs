@@ -29,7 +29,8 @@ public class DocumentProcessorHostedService : IHostedService, IAsyncDisposable
     public Task StartAsync(CancellationToken cancellationToken)
     {
         var conn = _configuration.GetConnectionString("ServiceBus");
-        if (string.IsNullOrWhiteSpace(conn))
+
+        if (string.IsNullOrEmpty(conn))
         {
             _logger.LogInformation("ServiceBus connection string not configured - DocumentProcessorHostedService will not start.");
             return Task.CompletedTask;
@@ -49,18 +50,29 @@ public class DocumentProcessorHostedService : IHostedService, IAsyncDisposable
         _processor.ProcessErrorAsync += ErrorHandler;
 
         _logger.LogInformation("Starting ServiceBus processor for queue {Queue}", queue);
+
         return _processor.StartProcessingAsync(cancellationToken);
     }
 
     private async Task MessageHandler(ProcessMessageEventArgs args)
     {
+        if (string.IsNullOrEmpty(args?.Message?.Body?.ToString()))
+        {
+            throw new InvalidOperationException("Message body is null");
+        }
+
         var body = args.Message.Body.ToString();
         DocumentMessage? doc = null;
 
         try
         {
+
             doc = JsonSerializer.Deserialize<DocumentMessage>(body);
-            if (doc == null) throw new InvalidOperationException("Invalid message payload");
+
+            if (doc == null)
+            {
+                throw new InvalidOperationException("Invalid message payload");
+            }
 
             var container = _configuration["Azure:BlobContainerName"] ?? "shipments-documents";
 
@@ -72,6 +84,7 @@ public class DocumentProcessorHostedService : IHostedService, IAsyncDisposable
 
             // Kreiramo scope za pristup scoped servisima (IShipmentService, DbContext...)
             using var scope = _serviceProvider.CreateScope();
+
             var shipmentService = scope.ServiceProvider.GetRequiredService<IShipmentService>();
 
             await shipmentService.MarkProcessedAsync(doc.ShipmentId);
@@ -82,6 +95,7 @@ public class DocumentProcessorHostedService : IHostedService, IAsyncDisposable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error processing message: {Body}", body);
+
             try
             {
                 await args.AbandonMessageAsync(args.Message);
