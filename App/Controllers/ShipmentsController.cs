@@ -45,12 +45,21 @@ public class ShipmentsController : ControllerBase
 
     // Pagination: page and pageSize as query parameters
     [HttpGet("GetAll")]
-    public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    public async Task<IActionResult> GetAll([FromQuery] int page, [FromQuery] int pageSize)
     {
-        if (page <= 0) page = 1;
-        var defaultPageSize = 20;
+        if (page <= 0)
+        {
+            page = 1;
+        }
+
+        var defaultPageSize = 5;
         var maxPageSize = 100;
-        if (pageSize <= 0) pageSize = defaultPageSize;
+
+        if (pageSize <= 0)
+        {
+            pageSize = defaultPageSize;
+        }
+
         pageSize = Math.Min(pageSize, maxPageSize);
 
         var request = new GetAllShipmentsRequest(page, pageSize);

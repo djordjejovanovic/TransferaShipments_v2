@@ -30,7 +30,6 @@ public class ShipmentRepository : IShipmentRepository
         return await _db.Shipments.OrderByDescending(s => s.CreatedAt).ToListAsync();
     }
 
-    // New pagination method - efficient database query
     public async Task<IEnumerable<Shipment>> GetAllAsync(int page, int pageSize)
     {
         return await _db.Shipments
