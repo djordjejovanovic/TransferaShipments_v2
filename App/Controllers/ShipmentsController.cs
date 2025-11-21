@@ -55,7 +55,7 @@ public class ShipmentsController : ControllerBase
     }
 
     [HttpPost("UploadDocument/{id:int}")]
-    public async Task<IActionResult> UploadDocument(int id, IFormFile file)
+    public async Task<IActionResult> UploadDocument(int id, [FromForm] IFormFile file)
     {
         if (file == null || file.Length == 0) return BadRequest("File is required");
 
