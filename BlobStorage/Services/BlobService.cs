@@ -28,18 +28,18 @@ public class BlobService : IBlobService
         return new BlobServiceClient(conn);
     }
 
-    private BlobContainerClient GetContainer(string container)
+    private async Task<BlobContainerClient> GetContainerAsync(string container)
     {
         var conn = _configuration.GetConnectionString("AzureBlob");
         var client = CreateClient(conn ?? "");
         var containerClient = client.GetBlobContainerClient(container);
-        containerClient.CreateIfNotExists(PublicAccessType.None);
+        await containerClient.CreateIfNotExistsAsync(PublicAccessType.None);
         return containerClient;
     }
 
     public async Task<string> UploadAsync(string containerName, string blobName, Stream data, string contentType)
     {
-        var containerClient = GetContainer(containerName);
+        var containerClient = await GetContainerAsync(containerName);
         var blobClient = containerClient.GetBlobClient(blobName);
         var headers = new BlobHttpHeaders { ContentType = contentType };
 
@@ -50,7 +50,7 @@ public class BlobService : IBlobService
 
     public async Task<Stream> DownloadAsync(string containerName, string blobName)
     {
-        var containerClient = GetContainer(containerName);
+        var containerClient = await GetContainerAsync(containerName);
         var blobClient = containerClient.GetBlobClient(blobName);
         var ms = new MemoryStream();
         await blobClient.DownloadToAsync(ms);

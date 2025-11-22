@@ -116,24 +116,35 @@ public class ShipmentsController : ControllerBase
             return NotFound();
         }
 
-        // Upload to blob
-        var container = _configuration["Azure:BlobContainerName"] ?? "shipments-documents";
-        var blobName = $"{id}/{Guid.NewGuid()}_{file.FileName}";
-        var stream = file.OpenReadStream();
-        var blobUrl = await _blobService.UploadAsync(container, blobName, stream, file.ContentType);
-
-        // Save metadata & update status using MediatR
-        var uploadRequest = new UploadDocumentRequest(id, blobName, blobUrl);
-        var uploadResponse = await _mediator.Send(uploadRequest);
-
-        if (!uploadResponse.Success)
+        try
         {
-            return NotFound();
+            // Upload to blob
+            var container = _configuration["Azure:BlobContainerName"] ?? "shipments-documents";
+            var blobName = $"{id}/{Guid.NewGuid()}_{file.FileName}";
+            
+            string blobUrl;
+            using (var stream = file.OpenReadStream())
+            {
+                blobUrl = await _blobService.UploadAsync(container, blobName, stream, file.ContentType);
+            }
+
+            // Save metadata & update status using MediatR
+            var uploadRequest = new UploadDocumentRequest(id, blobName, blobUrl);
+            var uploadResponse = await _mediator.Send(uploadRequest);
+
+            if (!uploadResponse.Success)
+            {
+                return NotFound();
+            }
+
+            // Send message to service bus
+            await _busPublisher.PublishDocumentToProcessAsync(id, blobName);
+
+            return Accepted(new { blobName, blobUrl });
         }
-
-        // Send message to service bus
-        await _busPublisher.PublishDocumentToProcessAsync(id, blobName);
-
-        return Accepted(new { blobName, blobUrl });
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Failed to upload document", message = ex.Message });
+        }
     }
 }
