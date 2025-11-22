@@ -33,17 +33,21 @@ namespace TransferaShipments.App.Filters
             {
                 if (p.ParameterType == typeof(IFormFile))
                 {
-                    multipartSchema.Properties[p.Name] = new OpenApiSchema { Type = "string", Format = "binary" };
+                    if (!string.IsNullOrEmpty(p.Name))
+                        multipartSchema.Properties[p.Name] = new OpenApiSchema { Type = "string", Format = "binary" };
                     continue;
                 }
 
                 if (p.ParameterType == typeof(IFormFileCollection))
                 {
-                    multipartSchema.Properties[p.Name] = new OpenApiSchema
+                    if (!string.IsNullOrEmpty(p.Name))
                     {
-                        Type = "array",
-                        Items = new OpenApiSchema { Type = "string", Format = "binary" }
-                    };
+                        multipartSchema.Properties[p.Name] = new OpenApiSchema
+                        {
+                            Type = "array",
+                            Items = new OpenApiSchema { Type = "string", Format = "binary" }
+                        };
+                    }
                     continue;
                 }
 
@@ -86,7 +90,9 @@ namespace TransferaShipments.App.Filters
             // Remove parameters that were moved into the request body to avoid duplicates
             if (operation.Parameters != null && operation.Parameters.Count > 0)
             {
-                var toRemove = operation.Parameters.Where(op => fileParams.Any(fp => fp.Name == op.Name)).ToList();
+                var toRemove = operation.Parameters.Where(op => 
+                    !string.IsNullOrEmpty(op.Name) && 
+                    fileParams.Any(fp => !string.IsNullOrEmpty(fp.Name) && fp.Name == op.Name)).ToList();
                 foreach (var r in toRemove) operation.Parameters.Remove(r);
             }
         }
