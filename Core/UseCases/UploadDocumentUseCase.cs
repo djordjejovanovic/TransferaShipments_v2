@@ -33,9 +33,15 @@ namespace AppServices.UseCases
         public async Task<UploadDocumentResponse> Handle(UploadDocumentRequest request, CancellationToken cancellationToken)
         {
             // Validate stream
-            if (request.FileStream == null || request.FileStream.Length == 0)
+            if (request.FileStream == null)
             {
                 return new UploadDocumentResponse(false, null, null, "File is required");
+            }
+
+            // Check stream length if possible (some streams don't support Length property)
+            if (request.FileStream.CanSeek && request.FileStream.Length == 0)
+            {
+                return new UploadDocumentResponse(false, null, null, "File is empty");
             }
 
             // Check if shipment exists
@@ -45,8 +51,15 @@ namespace AppServices.UseCases
                 return new UploadDocumentResponse(false, null, null, "Shipment not found");
             }
 
+            // Sanitize file name to prevent path traversal attacks
+            var sanitizedFileName = Path.GetFileName(request.FileName);
+            if (string.IsNullOrWhiteSpace(sanitizedFileName))
+            {
+                return new UploadDocumentResponse(false, null, null, "Invalid file name");
+            }
+
             // Generate blob name and upload to storage
-            var blobName = $"{request.ShipmentId}/{Guid.NewGuid()}_{request.FileName}";
+            var blobName = $"{request.ShipmentId}/{Guid.NewGuid()}_{sanitizedFileName}";
             
             var blobUrl = await _blobService.UploadAsync(
                 request.ContainerName, 

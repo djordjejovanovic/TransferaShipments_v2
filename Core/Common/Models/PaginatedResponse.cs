@@ -17,7 +17,7 @@ public class PaginatedResponse<T>
         Items = items;
         TotalCount = totalCount;
         Page = page;
-        PageSize = pageSize;
-        TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+        PageSize = pageSize > 0 ? pageSize : 1; // Ensure pageSize is at least 1
+        TotalPages = (int)Math.Ceiling(totalCount / (double)PageSize);
     }
 }
