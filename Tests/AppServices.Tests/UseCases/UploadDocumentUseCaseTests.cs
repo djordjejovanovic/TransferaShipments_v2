@@ -364,7 +364,7 @@ public class UploadDocumentUseCaseTests
         string? capturedBlobName = null;
         _blobServiceMock
             .Setup(x => x.UploadAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<string>(), cancellationToken))
-            .Callback<string, string, Stream, string, CancellationToken>((c, bn, s, ct, token) => capturedBlobName = bn)
+            .Callback<string, string, Stream, string, CancellationToken>((container, blobName, stream, contentType, ct) => capturedBlobName = blobName)
             .ReturnsAsync("https://blob.url");
 
         _shipmentRepositoryMock
