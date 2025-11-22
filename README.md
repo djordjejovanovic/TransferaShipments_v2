@@ -63,16 +63,25 @@ Za korišćenje pravog Service Bus-a, podesite connection string:
 
 ### Testiranje API-ja
 
+**Napomena o autentikaciji**: Aplikacija koristi API Key autentikaciju. Potrebno je proslediti API ključ u zaglavlju `X-API-Key` za sve zahteve (osim za Swagger i `/health` endpoint).
+
+Podrazumevani API ključ u `appsettings.json` je `changeme`. Za produkciju, postavite sigurnu vrednost kroz environment varijablu:
+```bash
+export ApiKey="your-secure-api-key-here"
+```
+
 #### Kreiranje pošiljke (Shipment)
 ```bash
 curl -X POST http://localhost:52752/api/Shipments \
   -H "Content-Type: application/json" \
+  -H "X-API-Key: changeme" \
   -d '{"referenceNumber":"REF001","sender":"Pošiljalac","recipient":"Primalac"}'
 ```
 
 #### Upload dokumenta
 ```bash
 curl -X POST http://localhost:52752/api/Shipments/1/documents \
+  -H "X-API-Key: changeme" \
   -F "file=@/path/to/file.pdf"
 ```
 

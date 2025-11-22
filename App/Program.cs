@@ -8,6 +8,7 @@ using TransferaShipments.Persistence.Data;
 using TransferaShipments.Persistence.Repositories;
 using TransferaShipments.ServiceBus.HostedServices;
 using TransferaShipments.ServiceBus.Services;
+using TransferaShipments.App.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseApiKeyMiddleware();
 
 app.MapControllers();
 
