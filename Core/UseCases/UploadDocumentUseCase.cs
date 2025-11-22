@@ -39,7 +39,7 @@ namespace AppServices.UseCases
             }
 
             // Check if shipment exists
-            var shipment = await _shipmentRepository.GetByIdAsync(request.ShipmentId);
+            var shipment = await _shipmentRepository.GetByIdAsync(request.ShipmentId, cancellationToken);
             if (shipment == null)
             {
                 return new UploadDocumentResponse(false, null, null, "Shipment not found");
@@ -52,17 +52,18 @@ namespace AppServices.UseCases
                 request.ContainerName, 
                 blobName, 
                 request.FileStream, 
-                request.ContentType);
+                request.ContentType,
+                cancellationToken);
 
             // Update shipment metadata and status
             shipment.LastDocumentBlobName = blobName;
             shipment.LastDocumentUrl = blobUrl;
             shipment.Status = TransferaShipments.Domain.Enums.ShipmentStatus.DocumentUploaded;
 
-            await _shipmentRepository.UpdateAsync(shipment);
+            await _shipmentRepository.UpdateAsync(shipment, cancellationToken);
 
             // Publish message to service bus for further processing
-            await _serviceBusPublisher.PublishDocumentToProcessAsync(request.ShipmentId, blobName);
+            await _serviceBusPublisher.PublishDocumentToProcessAsync(request.ShipmentId, blobName, cancellationToken);
 
             return new UploadDocumentResponse(true, blobName, blobUrl, null);
         }

@@ -7,11 +7,11 @@ namespace AppServices.Contracts.Repositories;
 /// </summary>
 public interface IShipmentRepository
 {
-    Task<Shipment> AddAsync(Shipment shipment);
-    Task<Shipment?> GetByIdAsync(int id);
-    Task<IEnumerable<Shipment>> GetAllAsync();
-    Task<IEnumerable<Shipment>> GetAllAsync(int page, int pageSize);
-    Task<int> GetCountAsync();
-    Task UpdateAsync(Shipment shipment);
-    Task SaveChangesAsync();
+    Task<Shipment> AddAsync(Shipment shipment, CancellationToken cancellationToken = default);
+    Task<Shipment?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Shipment>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IEnumerable<Shipment>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default);
+    Task<int> GetCountAsync(CancellationToken cancellationToken = default);
+    Task UpdateAsync(Shipment shipment, CancellationToken cancellationToken = default);
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

@@ -30,7 +30,7 @@ namespace AppServices.UseCases
                 Status = ShipmentStatus.Created
             };
 
-            var result = await _shipmentRepository.AddAsync(shipment);
+            var result = await _shipmentRepository.AddAsync(shipment, cancellationToken);
 
             var response = new CreateShipmentResponse(result.Id);
 

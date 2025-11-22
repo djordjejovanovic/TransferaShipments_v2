@@ -19,7 +19,7 @@ public class ServiceBusPublisher : IServiceBusPublisher
         _client = new ServiceBusClient(conn);
     }
 
-    public async Task PublishDocumentToProcessAsync(int shipmentId, string blobName)
+    public async Task PublishDocumentToProcessAsync(int shipmentId, string blobName, CancellationToken cancellationToken = default)
     {
         var sender = _client.CreateSender(_queueName);
 
@@ -36,6 +36,6 @@ public class ServiceBusPublisher : IServiceBusPublisher
             Subject = "DocumentToProcess",
         };
 
-        await sender.SendMessageAsync(msg);
+        await sender.SendMessageAsync(msg, cancellationToken);
     }
 }

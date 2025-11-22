@@ -78,24 +78,24 @@ public class DocumentProcessorHostedService : IHostedService, IAsyncDisposable
             var container = _configuration["Azure:BlobContainerName"] ?? "shipments-documents";
 
             // Download blob
-            var stream = await _blobService.DownloadAsync(container, doc.BlobName);
+            var stream = await _blobService.DownloadAsync(container, doc.BlobName, args.CancellationToken);
 
             // Simulate processing
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(2), args.CancellationToken);
 
             // Create scope for scoped services (Repository, DbContext)
             using var scope = _serviceProvider.CreateScope();
 
             var shipmentRepository = scope.ServiceProvider.GetRequiredService<IShipmentRepository>();
 
-            var shipment = await shipmentRepository.GetByIdAsync(doc.ShipmentId);
+            var shipment = await shipmentRepository.GetByIdAsync(doc.ShipmentId, args.CancellationToken);
             if (shipment != null)
             {
                 shipment.Status = ShipmentStatus.Processed;
-                await shipmentRepository.UpdateAsync(shipment);
+                await shipmentRepository.UpdateAsync(shipment, args.CancellationToken);
             }
 
-            await args.CompleteMessageAsync(args.Message);
+            await args.CompleteMessageAsync(args.Message, args.CancellationToken);
             _logger.LogInformation("Processed message for ShipmentId={ShipmentId}, BlobName={BlobName}", doc.ShipmentId, doc.BlobName);
         }
         catch (Exception ex)

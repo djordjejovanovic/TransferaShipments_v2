@@ -22,8 +22,8 @@ namespace AppServices.UseCases
             var page = request.Page <= 0 ? 1 : request.Page;
             var pageSize = request.PageSize <= 0 ? 20 : Math.Min(request.PageSize, 100);
 
-            var shipments = await _shipmentRepository.GetAllAsync(page, pageSize);
-            var total = await _shipmentRepository.GetCountAsync();
+            var shipments = await _shipmentRepository.GetAllAsync(page, pageSize, cancellationToken);
+            var total = await _shipmentRepository.GetCountAsync(cancellationToken);
             
             return new PaginatedResponse<Shipment>(shipments, total, page, pageSize);
         }

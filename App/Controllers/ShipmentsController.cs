@@ -80,7 +80,6 @@ public class ShipmentsController : ControllerBase
         
         using var stream = file.OpenReadStream();
         var request = new UploadDocumentRequest(id, stream, file.FileName, file.ContentType, container);
-
         var response = await _mediator.Send(request, cancellationToken);
 
         if (!response.Success)
