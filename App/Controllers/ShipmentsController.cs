@@ -103,6 +103,7 @@ public class ShipmentsController : ControllerBase
     }
 
     [HttpPost("UploadDocument/{id:int}")]
+    [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadDocument(int id, [FromForm] IFormFile file)
     {
         if (file == null || file.Length == 0)
