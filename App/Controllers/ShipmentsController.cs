@@ -67,7 +67,7 @@ public class ShipmentsController : ControllerBase
         return Ok(response.Shipment);
     }
 
-    [HttpPost("UploadDocument/{id:int}")]
+    [HttpPost("{id:int}/Documents")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadDocument(int id, IFormFile file, CancellationToken cancellationToken)
     {
