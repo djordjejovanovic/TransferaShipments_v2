@@ -35,7 +35,7 @@ public class BlobService : IBlobService
         };
 
         await blobClient.UploadAsync(data, uploadOptions, cancellationToken);
-        // Return URI (may be local emulator URI if using Azurite)
+
         return blobClient.Uri.ToString();
     }
 

@@ -32,6 +32,11 @@ public class ShipmentsController : ControllerBase
 
         var response = await _mediator.Send(request, cancellationToken);
 
+        if (!response.Success)
+        {
+            return Conflict(new { error = response.ErrorMessage });
+        }
+
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
@@ -55,6 +60,11 @@ public class ShipmentsController : ControllerBase
     [HttpGet("GetById/{id:int}")]
     public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
     {
+        if(id <= 0)
+        {
+            return BadRequest("Invalid shipment ID");
+        }
+
         var request = new GetShipmentByIdRequest(id);
 
         var response = await _mediator.Send(request, cancellationToken);
@@ -73,12 +83,12 @@ public class ShipmentsController : ControllerBase
     {
         if (file == null || file.Length == 0)
         {
-            return BadRequest(new { error = "File is required" });
+            return BadRequest("File is required");
         }
 
         var container = _configuration["Azure:BlobContainerName"] ?? "shipments-documents";
-        
         using var stream = file.OpenReadStream();
+
         var request = new UploadDocumentRequest(id, stream, file.FileName, file.ContentType, container);
         var response = await _mediator.Send(request, cancellationToken);
 

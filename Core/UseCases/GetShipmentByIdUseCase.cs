@@ -20,6 +20,7 @@ namespace AppServices.UseCases
         public async Task<GetShipmentByIdResponse> Handle(GetShipmentByIdRequest request, CancellationToken cancellationToken)
         {
             var shipment = await _shipmentRepository.GetByIdAsync(request.Id, cancellationToken);
+
             return new GetShipmentByIdResponse(shipment);
         }
     }
