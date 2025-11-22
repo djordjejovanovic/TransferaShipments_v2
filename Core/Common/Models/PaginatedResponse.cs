@@ -8,16 +8,13 @@ public class PaginatedResponse<T>
     public int PageSize { get; set; }
     public int TotalPages { get; set; }
 
-    public PaginatedResponse()
-    {
-    }
 
     public PaginatedResponse(IEnumerable<T> items, int totalCount, int page, int pageSize)
     {
         Items = items;
         TotalCount = totalCount;
         Page = page;
-        PageSize = pageSize > 0 ? pageSize : 1; // Ensure pageSize is at least 1
+        PageSize = pageSize > 0 ? pageSize : 1;
         TotalPages = (int)Math.Ceiling(totalCount / (double)PageSize);
     }
 }

@@ -26,8 +26,7 @@ public class ShipmentRepository : IShipmentRepository
 
     public async Task<Shipment?> GetByReferenceNumberAsync(string referenceNumber, CancellationToken cancellationToken = default)
     {
-        return await _db.Shipments
-            .FirstOrDefaultAsync(s => s.ReferenceNumber.ToUpper() == referenceNumber.ToUpper(), cancellationToken);
+        return await _db.Shipments.FirstOrDefaultAsync(s => s.ReferenceNumber != null && s.ReferenceNumber.ToUpper() == referenceNumber.ToUpper(), cancellationToken);
     }
 
     public async Task<IEnumerable<Shipment>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -57,5 +56,8 @@ public class ShipmentRepository : IShipmentRepository
         await _db.SaveChangesAsync(cancellationToken);
     }
 
-    public Task SaveChangesAsync(CancellationToken cancellationToken = default) => _db.SaveChangesAsync(cancellationToken);
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return _db.SaveChangesAsync(cancellationToken);
+    }
 }

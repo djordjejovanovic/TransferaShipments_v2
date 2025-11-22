@@ -18,11 +18,20 @@ namespace AppServices.UseCases
 
         public async Task<PaginatedResponse<Shipment>> Handle(GetAllShipmentsRequest request, CancellationToken cancellationToken)
         {
-            // Validate and normalize pagination parameters
-            var page = request.Page <= 0 ? 1 : request.Page;
-            var pageSize = request.PageSize <= 0 ? 20 : Math.Min(request.PageSize, 100);
-
+            var page = request.Page;
+            if(request.Page <= 0)
+            {
+                page = 1;
+            }
+            
+            var pageSize = Math.Min(request.PageSize, 100);
+            if(request.PageSize <= 0)
+            {
+                pageSize = 20;
+            }   
+            
             var shipments = await _shipmentRepository.GetAllAsync(page, pageSize, cancellationToken);
+
             var total = await _shipmentRepository.GetCountAsync(cancellationToken);
             
             return new PaginatedResponse<Shipment>(shipments, total, page, pageSize);

@@ -20,7 +20,6 @@ namespace AppServices.UseCases
 
         public async Task<CreateShipmentResponse> Handle(CreateShipmentRequest request, CancellationToken cancellationToken)
         {
-            // Check if shipment with same ReferenceNumber already exists
             var existingShipment = await _shipmentRepository.GetByReferenceNumberAsync(request.ReferenceNumber, cancellationToken);
             
             if (existingShipment != null)

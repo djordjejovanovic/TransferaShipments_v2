@@ -63,13 +63,10 @@ public class DocumentProcessorHostedService : IHostedService, IAsyncDisposable
         }
 
         var body = args.Message.Body.ToString();
-        DocumentMessage? doc = null;
-
         try
         {
 
-            doc = JsonSerializer.Deserialize<DocumentMessage>(body);
-
+            DocumentMessage? doc = JsonSerializer.Deserialize<DocumentMessage>(body);
             if (doc == null)
             {
                 throw new InvalidOperationException("Invalid message payload");
@@ -77,13 +74,10 @@ public class DocumentProcessorHostedService : IHostedService, IAsyncDisposable
 
             var container = _configuration["Azure:BlobContainerName"] ?? "shipments-documents";
 
-            // Download blob
             var stream = await _blobService.DownloadAsync(container, doc.BlobName, args.CancellationToken);
 
-            // Simulate processing
             await Task.Delay(TimeSpan.FromSeconds(2), args.CancellationToken);
 
-            // Create scope for scoped services (Repository, DbContext)
             using var scope = _serviceProvider.CreateScope();
 
             var shipmentRepository = scope.ServiceProvider.GetRequiredService<IShipmentRepository>();
@@ -130,8 +124,15 @@ public class DocumentProcessorHostedService : IHostedService, IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if (_processor != null) await _processor.DisposeAsync();
-        if (_client != null) await _client.DisposeAsync();
+        if (_processor != null)
+        {
+            await _processor.DisposeAsync();
+        }
+
+        if (_client != null)
+        {
+            await _client.DisposeAsync();
+        }
     }
 
     private record DocumentMessage(int ShipmentId, string BlobName);
