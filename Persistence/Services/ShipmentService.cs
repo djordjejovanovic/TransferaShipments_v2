@@ -6,6 +6,7 @@ using TransferaShipments.Core.DTOs;
 
 namespace TransferaShipments.Persistence.Services;
 
+// ovaj servis je nepotreban, mozes ga obrisate. Individualne metedoe se implementiraju kroz use case-ove
 public class ShipmentService : IShipmentService
 {
     private readonly IShipmentRepository _repo;

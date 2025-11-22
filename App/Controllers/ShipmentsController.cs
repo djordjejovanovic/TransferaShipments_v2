@@ -61,6 +61,9 @@ public class ShipmentsController : ControllerBase
 
         pageSize = Math.Min(pageSize, maxPageSize);
 
+        //Ovo bi mogao da prebacis u fluentValidation neku klasu ili da napravis model ovde u projetu i preko anotacije ga izvalidiras,
+        // ili da prosledis do use case-a i tamo da validiras i bacis exception ako nesto ne valja
+
         var request = new GetAllShipmentsRequest(page, pageSize);
 
         var response = await _mediator.Send(request);
@@ -72,6 +75,9 @@ public class ShipmentsController : ControllerBase
 
         Response.Headers["X-Total-Count"] = response.TotalCount.ToString();
 
+
+        //Bolje je da se u use case-u ovo odradi. Takodje mozes napraviti neki paginateResponseObjekat, koji moze da nasledi response za konkretan use case ili cak genericki paginatedResponse<T>
+        // I tako dobijes uniformnu logiku za ove slucajeve
         var result = new
         {
             Items = response.Shipments,
@@ -80,6 +86,7 @@ public class ShipmentsController : ControllerBase
             PageSize = pageSize,
             TotalPages = (int)Math.Ceiling(response.TotalCount / (double)pageSize)
         };
+
 
         return Ok(result);
     }
@@ -101,8 +108,11 @@ public class ShipmentsController : ControllerBase
 
     [HttpPost("UploadDocument/{id:int}")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadDocument(int id, IFormFile file)
+    public async Task<IActionResult> UploadDocument(int id, IFormFile file, CancellationToken cancellationToken)
     {
+        //Sve ovo treba da bude unutar jednog use case-a. Controller treba da bude tanak sloj koji samo prosledjuje pozive dalje.
+        // u jednom requesu bi rebao da se izvrsi samo jedan use case
+        // takodje vidi cancellation token da prosledis svuda, vazi za sve endpointe
         if (file == null || file.Length == 0)
         {
             return BadRequest("File is required");
@@ -110,7 +120,7 @@ public class ShipmentsController : ControllerBase
 
         var checkRequest = new GetShipmentByIdRequest(id);
 
-        var checkResponse = await _mediator.Send(checkRequest);
+        var checkResponse = await _mediator.Send(checkRequest, cancellationToken);
 
         if (checkResponse?.Shipment == null)
         {
@@ -125,7 +135,7 @@ public class ShipmentsController : ControllerBase
 
         // Save metadata & update status using MediatR
         var uploadRequest = new UploadDocumentRequest(id, blobName, blobUrl);
-        var uploadResponse = await _mediator.Send(uploadRequest);
+        var uploadResponse = await _mediator.Send(uploadRequest, cancellationToken);
 
         if (!uploadResponse.Success)
         {

@@ -2,6 +2,9 @@ using TransferaShipments.Domain.Entities;
 
 namespace TransferaShipments.Core.Repositories;
 
+// mozes sve interfejse da gruises u jedan folder pa unuar njega da pravis dalje podele
+// npr. contracts.repositories, contracts.services, contracts.storage itd.
+
 public interface IShipmentRepository
 {
     Task<Shipment> AddAsync(Shipment shipment);
