@@ -43,7 +43,7 @@ namespace AppServices.UseCases
 
             var result = await _shipmentRepository.AddAsync(shipment, cancellationToken);
 
-            return new CreateShipmentResponse(Success: true, Id: result.Id, ErrorMessage: null);
+            return new CreateShipmentResponse(Success: true, Id: result.Id);
         }
     }
 }

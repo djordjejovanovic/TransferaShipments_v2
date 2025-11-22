@@ -26,7 +26,8 @@ public class ShipmentRepository : IShipmentRepository
 
     public async Task<Shipment?> GetByReferenceNumberAsync(string referenceNumber, CancellationToken cancellationToken = default)
     {
-        return await _db.Shipments.FirstOrDefaultAsync(s => s.ReferenceNumber == referenceNumber, cancellationToken);
+        return await _db.Shipments
+            .FirstOrDefaultAsync(s => s.ReferenceNumber.ToUpper() == referenceNumber.ToUpper(), cancellationToken);
     }
 
     public async Task<IEnumerable<Shipment>> GetAllAsync(CancellationToken cancellationToken = default)
