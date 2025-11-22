@@ -1,14 +1,13 @@
 using MediatR;
 using TransferaShipments.Domain.Entities;
-using TransferaShipments.Core.Repositories;
+using AppServices.Contracts.Repositories;
+using AppServices.Common.Models;
 
 namespace AppServices.UseCases
 {
-    public record GetAllShipmentsRequest(int Page, int PageSize) : IRequest<GetAllShipmentsResponse>;
+    public record GetAllShipmentsRequest(int Page, int PageSize) : IRequest<PaginatedResponse<Shipment>>;
 
-    public record GetAllShipmentsResponse(IEnumerable<Shipment> Shipments, int TotalCount);
-
-    public class GetAllShipmentsUseCase : IRequestHandler<GetAllShipmentsRequest, GetAllShipmentsResponse>
+    public class GetAllShipmentsUseCase : IRequestHandler<GetAllShipmentsRequest, PaginatedResponse<Shipment>>
     {
         private readonly IShipmentRepository _shipmentRepository;
 
@@ -17,11 +16,16 @@ namespace AppServices.UseCases
             _shipmentRepository = shipmentRepository;
         }
 
-        public async Task<GetAllShipmentsResponse> Handle(GetAllShipmentsRequest request, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<Shipment>> Handle(GetAllShipmentsRequest request, CancellationToken cancellationToken)
         {
-            var shipments = await _shipmentRepository.GetAllAsync(request.Page, request.PageSize);
-            var total = await _shipmentRepository.GetCountAsync();
-            return new GetAllShipmentsResponse(shipments, total);
+            // Validate and normalize pagination parameters
+            var page = request.Page <= 0 ? 1 : request.Page;
+            var pageSize = request.PageSize <= 0 ? 20 : Math.Min(request.PageSize, 100);
+
+            var shipments = await _shipmentRepository.GetAllAsync(page, pageSize, cancellationToken);
+            var total = await _shipmentRepository.GetCountAsync(cancellationToken);
+            
+            return new PaginatedResponse<Shipment>(shipments, total, page, pageSize);
         }
     }
 }
