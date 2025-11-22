@@ -263,9 +263,9 @@ Ili, aplikacija će automatski kreirati kontejner pri prvom upload-u.
 
 ## Dodatni resursi
 
-- **Azure Storage Explorer dokumentacija**: https://docs.microsoft.com/en-us/azure/vs-azure-tools-storage-manage-with-storage-explorer
-- **Azurite dokumentacija**: https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azurite
-- **Azure Storage dokumentacija**: https://docs.microsoft.com/en-us/azure/storage/
+- **Azure Storage Explorer dokumentacija**: https://learn.microsoft.com/en-us/azure/vs-azure-tools-storage-manage-with-storage-explorer
+- **Azurite dokumentacija**: https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite
+- **Azure Storage dokumentacija**: https://learn.microsoft.com/en-us/azure/storage/
 
 ## Bezbednosne napomene
 
