@@ -1,12 +1,10 @@
 ﻿using MediatR;
 using TransferaShipments.Domain.Entities;
 using TransferaShipments.Domain.Enums;
-using TransferaShipments.Core.Repositories;
+using AppServices.Contracts.Repositories;
 
 namespace AppServices.UseCases
 {
-    // ove recorde mozes prebaciti u poseban folder DTOs ako zelis ili boundary moze isto da bude ime foldera. Svejedno je.
-    // takodje je ok praksa da stave npr u folder UseCase/CreateShipment/CreateShipmentRequest.cs i  UseCase/CreateShipmentResponse.cs i  UseCase/CreateShipmentUseCase.cs
     public record CreateShipmentRequest(string ReferenceNumber, string Sender, string Recipient) : IRequest<CreateShipmentResponse>;
 
     public record CreateShipmentResponse(int Id);
@@ -32,7 +30,7 @@ namespace AppServices.UseCases
                 Status = ShipmentStatus.Created
             };
 
-            var result = await _shipmentRepository.AddAsync(shipment);
+            var result = await _shipmentRepository.AddAsync(shipment, cancellationToken);
 
             var response = new CreateShipmentResponse(result.Id);
 

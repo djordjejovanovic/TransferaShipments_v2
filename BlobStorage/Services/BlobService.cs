@@ -1,6 +1,7 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Configuration;
+using AppServices.Contracts.Storage;
 
 namespace TransferaShipments.BlobStorage.Services;
 
@@ -37,23 +38,28 @@ public class BlobService : IBlobService
         return containerClient;
     }
 
-    public async Task<string> UploadAsync(string containerName, string blobName, Stream data, string contentType)
+    public async Task<string> UploadAsync(string containerName, string blobName, Stream data, string contentType, CancellationToken cancellationToken = default)
     {
         var containerClient = GetContainer(containerName);
         var blobClient = containerClient.GetBlobClient(blobName);
         var headers = new BlobHttpHeaders { ContentType = contentType };
 
-        await blobClient.UploadAsync(data, headers);
+        var uploadOptions = new BlobUploadOptions
+        {
+            HttpHeaders = headers
+        };
+
+        await blobClient.UploadAsync(data, uploadOptions, cancellationToken);
         // Return URI (may be local emulator URI if using Azurite)
         return blobClient.Uri.ToString();
     }
 
-    public async Task<Stream> DownloadAsync(string containerName, string blobName)
+    public async Task<Stream> DownloadAsync(string containerName, string blobName, CancellationToken cancellationToken = default)
     {
         var containerClient = GetContainer(containerName);
         var blobClient = containerClient.GetBlobClient(blobName);
         var ms = new MemoryStream();
-        await blobClient.DownloadToAsync(ms);
+        await blobClient.DownloadToAsync(ms, cancellationToken);
         ms.Position = 0;
         return ms;
     }

@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using TransferaShipments.Core.DTOs;
-using TransferaShipments.BlobStorage.Services;
-using TransferaShipments.ServiceBus.Services;
+using TransferaShipments.App.Models;
 using MediatR;
 using AppServices.UseCases;
 
@@ -11,85 +9,55 @@ namespace TransferaShipments.App.Controllers;
 [Route("api/[controller]")]
 public class ShipmentsController : ControllerBase
 {
-    private readonly IBlobService _blobService;
-    private readonly IServiceBusPublisher _busPublisher;
-    private readonly IConfiguration _configuration;
     private readonly IMediator _mediator;
+    private readonly IConfiguration _configuration;
 
     public ShipmentsController(
-        IBlobService blobService,
-        IServiceBusPublisher busPublisher,
-        IConfiguration configuration,
-        IMediator mediator)
+        IMediator mediator,
+        IConfiguration configuration)
     {
-        _blobService = blobService;
-        _busPublisher = busPublisher;
-        _configuration = configuration;
         _mediator = mediator;
+        _configuration = configuration;
     }
 
     [HttpPost("Create")]
-    public async Task<IActionResult> Create([FromBody] ShipmentCreateDto dto)
+    public async Task<IActionResult> Create([FromBody] ShipmentCreateDto dto, CancellationToken cancellationToken)
     {
-        if(dto == null)
+        if (dto == null)
         {
             return BadRequest("Empty request");
         }
 
         var request = new CreateShipmentRequest(dto.ReferenceNumber, dto.Sender, dto.Recipient);
 
-        var response = await _mediator.Send(request);
+        var response = await _mediator.Send(request, cancellationToken);
 
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
-    // Pagination: page and pageSize as query parameters
     [HttpGet("GetAll")]
-    public async Task<IActionResult> GetAll([FromQuery] int page, [FromQuery] int pageSize)
+    public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
     {
-        if (page <= 0)
-        {
-            page = 1;
-        }
-
-        var maxPageSize = 100;
-
-        if (pageSize <= 0)
-        {
-            pageSize = 5;
-        }
-
-        pageSize = Math.Min(pageSize, maxPageSize);
-
         var request = new GetAllShipmentsRequest(page, pageSize);
 
-        var response = await _mediator.Send(request);
+        var response = await _mediator.Send(request, cancellationToken);
 
-        if (response?.Shipments == null)
+        if (response?.Items == null)
         {
             return NotFound();
         }
 
         Response.Headers["X-Total-Count"] = response.TotalCount.ToString();
 
-        var result = new
-        {
-            Items = response.Shipments,
-            TotalCount = response.TotalCount,
-            Page = page,
-            PageSize = pageSize,
-            TotalPages = (int)Math.Ceiling(response.TotalCount / (double)pageSize)
-        };
-
-        return Ok(result);
+        return Ok(response);
     }
 
     [HttpGet("GetById/{id:int}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
     {
         var request = new GetShipmentByIdRequest(id);
 
-        var response = await _mediator.Send(request);
+        var response = await _mediator.Send(request, cancellationToken);
 
         if (response?.Shipment == null)
         {
@@ -101,40 +69,24 @@ public class ShipmentsController : ControllerBase
 
     [HttpPost("UploadDocument/{id:int}")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadDocument(int id, IFormFile file)
+    public async Task<IActionResult> UploadDocument(int id, IFormFile file, CancellationToken cancellationToken)
     {
         if (file == null || file.Length == 0)
         {
-            return BadRequest("File is required");
+            return BadRequest(new { error = "File is required" });
         }
 
-        var checkRequest = new GetShipmentByIdRequest(id);
-
-        var checkResponse = await _mediator.Send(checkRequest);
-
-        if (checkResponse?.Shipment == null)
-        {
-            return NotFound();
-        }
-
-        // Upload to blob
         var container = _configuration["Azure:BlobContainerName"] ?? "shipments-documents";
-        var blobName = $"{id}/{Guid.NewGuid()}_{file.FileName}";
-        var stream = file.OpenReadStream();
-        var blobUrl = await _blobService.UploadAsync(container, blobName, stream, file.ContentType);
+        
+        using var stream = file.OpenReadStream();
+        var request = new UploadDocumentRequest(id, stream, file.FileName, file.ContentType, container);
+        var response = await _mediator.Send(request, cancellationToken);
 
-        // Save metadata & update status using MediatR
-        var uploadRequest = new UploadDocumentRequest(id, blobName, blobUrl);
-        var uploadResponse = await _mediator.Send(uploadRequest);
-
-        if (!uploadResponse.Success)
+        if (!response.Success)
         {
-            return NotFound();
+            return BadRequest(new { error = response.ErrorMessage });
         }
 
-        // Send message to service bus
-        await _busPublisher.PublishDocumentToProcessAsync(id, blobName);
-
-        return Accepted(new { blobName, blobUrl });
+        return Accepted(new { blobName = response.BlobName, blobUrl = response.BlobUrl });
     }
 }
