@@ -7,7 +7,7 @@ namespace AppServices.UseCases
 {
     public record CreateShipmentRequest(string ReferenceNumber, string Sender, string Recipient) : IRequest<CreateShipmentResponse>;
 
-    public record CreateShipmentResponse(int Id);
+    public record CreateShipmentResponse(bool Success, int? Id = null, string? ErrorMessage = null);
 
     public class CreateShipmentUseCase : IRequestHandler<CreateShipmentRequest, CreateShipmentResponse>
     {
@@ -20,6 +20,17 @@ namespace AppServices.UseCases
 
         public async Task<CreateShipmentResponse> Handle(CreateShipmentRequest request, CancellationToken cancellationToken)
         {
+            // Check if shipment with same ReferenceNumber already exists
+            var existingShipment = await _shipmentRepository.GetByReferenceNumberAsync(request.ReferenceNumber, cancellationToken);
+            
+            if (existingShipment != null)
+            {
+                return new CreateShipmentResponse(
+                    Success: false,
+                    Id: null,
+                    ErrorMessage: $"Shipment with ReferenceNumber '{request.ReferenceNumber}' already exists."
+                );
+            }
 
             var shipment = new Shipment
             {
@@ -32,9 +43,7 @@ namespace AppServices.UseCases
 
             var result = await _shipmentRepository.AddAsync(shipment, cancellationToken);
 
-            var response = new CreateShipmentResponse(result.Id);
-
-            return response;
+            return new CreateShipmentResponse(Success: true, Id: result.Id, ErrorMessage: null);
         }
     }
 }

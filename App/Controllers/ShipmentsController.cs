@@ -32,6 +32,11 @@ public class ShipmentsController : ControllerBase
 
         var response = await _mediator.Send(request, cancellationToken);
 
+        if (!response.Success)
+        {
+            return Conflict(new { error = response.ErrorMessage });
+        }
+
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
