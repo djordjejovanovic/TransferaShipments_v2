@@ -14,25 +14,10 @@ public class BlobService : IBlobService
         _configuration = configuration;
     }
 
-    private BlobServiceClient CreateClient(string conn)
-    {
-        // Support the simple development flag (recommended for local Azurite)
-        if (!string.IsNullOrEmpty(conn) && conn.Trim().Equals("UseDevelopmentStorage=true", StringComparison.OrdinalIgnoreCase))
-        {
-            // Construct the full Azurite connection string (Azurite uses the well-known devstoreaccount1)
-            // This value works for default Azurite setup (when started on localhost:10000).
-            var azuriteConn =
-                "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ5OUb9Q/2qjmreU+oiMTT+j6HjmQSlAvHBSoD6+MdVfn+BOvyFQA9QvwjkHQAUAicK5xCdvQ==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;";
-            return new BlobServiceClient(azuriteConn);
-        }
-
-        return new BlobServiceClient(conn);
-    }
-
     private BlobContainerClient GetContainer(string container)
     {
         var conn = _configuration.GetConnectionString("AzureBlob");
-        var client = CreateClient(conn ?? "");
+        var client = new BlobServiceClient(conn);
         var containerClient = client.GetBlobContainerClient(container);
         containerClient.CreateIfNotExists(PublicAccessType.None);
         return containerClient;
