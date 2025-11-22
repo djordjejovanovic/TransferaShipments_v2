@@ -1,6 +1,7 @@
 using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json;
+using AppServices.Contracts.Messaging;
 
 namespace TransferaShipments.ServiceBus.Services;
 

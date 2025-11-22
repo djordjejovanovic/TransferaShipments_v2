@@ -1,37 +1,70 @@
 using MediatR;
-using TransferaShipments.Core.Repositories;
+using AppServices.Contracts.Repositories;
+using AppServices.Contracts.Storage;
+using AppServices.Contracts.Messaging;
 
 namespace AppServices.UseCases
 {
-    public record UploadDocumentRequest(int ShipmentId, string BlobName, string BlobUrl) : IRequest<UploadDocumentResponse>;
+    public record UploadDocumentRequest(
+        int ShipmentId, 
+        Stream FileStream,
+        string FileName,
+        string ContentType,
+        string ContainerName) : IRequest<UploadDocumentResponse>;
 
-    public record UploadDocumentResponse(bool Success);
+    public record UploadDocumentResponse(bool Success, string? BlobName, string? BlobUrl, string? ErrorMessage);
 
     public class UploadDocumentUseCase : IRequestHandler<UploadDocumentRequest, UploadDocumentResponse>
     {
         private readonly IShipmentRepository _shipmentRepository;
+        private readonly IBlobService _blobService;
+        private readonly IServiceBusPublisher _serviceBusPublisher;
 
-        public UploadDocumentUseCase(IShipmentRepository shipmentRepository)
+        public UploadDocumentUseCase(
+            IShipmentRepository shipmentRepository,
+            IBlobService blobService,
+            IServiceBusPublisher serviceBusPublisher)
         {
             _shipmentRepository = shipmentRepository;
+            _blobService = blobService;
+            _serviceBusPublisher = serviceBusPublisher;
         }
 
         public async Task<UploadDocumentResponse> Handle(UploadDocumentRequest request, CancellationToken cancellationToken)
         {
-            var shipment = await _shipmentRepository.GetByIdAsync(request.ShipmentId);
-            
-            if (shipment == null)
+            // Validate stream
+            if (request.FileStream == null || request.FileStream.Length == 0)
             {
-                return new UploadDocumentResponse(false);
+                return new UploadDocumentResponse(false, null, null, "File is required");
             }
 
-            shipment.LastDocumentBlobName = request.BlobName;
-            shipment.LastDocumentUrl = request.BlobUrl;
+            // Check if shipment exists
+            var shipment = await _shipmentRepository.GetByIdAsync(request.ShipmentId);
+            if (shipment == null)
+            {
+                return new UploadDocumentResponse(false, null, null, "Shipment not found");
+            }
+
+            // Generate blob name and upload to storage
+            var blobName = $"{request.ShipmentId}/{Guid.NewGuid()}_{request.FileName}";
+            
+            var blobUrl = await _blobService.UploadAsync(
+                request.ContainerName, 
+                blobName, 
+                request.FileStream, 
+                request.ContentType);
+
+            // Update shipment metadata and status
+            shipment.LastDocumentBlobName = blobName;
+            shipment.LastDocumentUrl = blobUrl;
             shipment.Status = TransferaShipments.Domain.Enums.ShipmentStatus.DocumentUploaded;
 
             await _shipmentRepository.UpdateAsync(shipment);
 
-            return new UploadDocumentResponse(true);
+            // Publish message to service bus for further processing
+            await _serviceBusPublisher.PublishDocumentToProcessAsync(request.ShipmentId, blobName);
+
+            return new UploadDocumentResponse(true, blobName, blobUrl, null);
         }
     }
 }

@@ -4,16 +4,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
-using TransferaShipments.BlobStorage.Services;
-using TransferaShipments.Core.Services;
+using AppServices.Contracts.Storage;
+using AppServices.Contracts.Repositories;
+using TransferaShipments.Domain.Enums;
 
 namespace TransferaShipments.ServiceBus.HostedServices;
 
 public class DocumentProcessorHostedService : IHostedService, IAsyncDisposable
 {
     private readonly IConfiguration _configuration;
-    private readonly IBlobService _blobService; // singleton je ok
-    private readonly IServiceProvider _serviceProvider; // koristimo za kreiranje scope-a
+    private readonly IBlobService _blobService;
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<DocumentProcessorHostedService> _logger;
     private ServiceBusClient? _client;
     private ServiceBusProcessor? _processor;
@@ -76,18 +77,23 @@ public class DocumentProcessorHostedService : IHostedService, IAsyncDisposable
 
             var container = _configuration["Azure:BlobContainerName"] ?? "shipments-documents";
 
-            // Preuzimanje bLOB-a (blobService singleton)
+            // Download blob
             var stream = await _blobService.DownloadAsync(container, doc.BlobName);
 
-            // Simulirana obrada (ili stvarna)
+            // Simulate processing
             await Task.Delay(TimeSpan.FromSeconds(2));
 
-            // Kreiramo scope za pristup scoped servisima (IShipmentService, DbContext...)
+            // Create scope for scoped services (Repository, DbContext)
             using var scope = _serviceProvider.CreateScope();
 
-            var shipmentService = scope.ServiceProvider.GetRequiredService<IShipmentService>();
+            var shipmentRepository = scope.ServiceProvider.GetRequiredService<IShipmentRepository>();
 
-            await shipmentService.MarkProcessedAsync(doc.ShipmentId);
+            var shipment = await shipmentRepository.GetByIdAsync(doc.ShipmentId);
+            if (shipment != null)
+            {
+                shipment.Status = ShipmentStatus.Processed;
+                await shipmentRepository.UpdateAsync(shipment);
+            }
 
             await args.CompleteMessageAsync(args.Message);
             _logger.LogInformation("Processed message for ShipmentId={ShipmentId}, BlobName={BlobName}", doc.ShipmentId, doc.BlobName);

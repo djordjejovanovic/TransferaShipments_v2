@@ -1,6 +1,7 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Configuration;
+using AppServices.Contracts.Storage;
 
 namespace TransferaShipments.BlobStorage.Services;
 

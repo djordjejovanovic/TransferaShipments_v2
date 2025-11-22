@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TransferaShipments.Domain.Entities;
 using TransferaShipments.Persistence.Data;
-using TransferaShipments.Core.Repositories;
+using AppServices.Contracts.Repositories;
 
 namespace TransferaShipments.Persistence.Repositories;
 
@@ -24,7 +24,6 @@ public class ShipmentRepository : IShipmentRepository
         return await _db.Shipments.FirstOrDefaultAsync(s => s.Id == id);
     }
 
-    // Original method (returns all) - kept for backward compatibility
     public async Task<IEnumerable<Shipment>> GetAllAsync()
     {
         return await _db.Shipments.OrderByDescending(s => s.CreatedAt).ToListAsync();

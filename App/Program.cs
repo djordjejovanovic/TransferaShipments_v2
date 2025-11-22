@@ -1,11 +1,11 @@
 using AppServices.UseCases;
+using AppServices.Contracts.Repositories;
+using AppServices.Contracts.Storage;
+using AppServices.Contracts.Messaging;
 using Microsoft.EntityFrameworkCore;
 using TransferaShipments.BlobStorage.Services;
-using TransferaShipments.Core.Repositories;
-using TransferaShipments.Core.Services;
 using TransferaShipments.Persistence.Data;
 using TransferaShipments.Persistence.Repositories;
-using TransferaShipments.Persistence.Services;
 using TransferaShipments.ServiceBus.HostedServices;
 using TransferaShipments.ServiceBus.Services;
 
@@ -19,9 +19,8 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
 
-// DI - Persistence / Core
+// DI - Repositories
 builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
-builder.Services.AddScoped<IShipmentService, ShipmentService>();
 
 // MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateShipmentUseCase>());
@@ -41,7 +40,6 @@ if (hasValidServiceBus)
 }
 else
 {
-    // nema SB konfiguracije – ne podižemo hosted consumer i koristimo NoOp publisher
     builder.Services.AddSingleton<IServiceBusPublisher, NoOpServiceBusPublisher>();
 }
 

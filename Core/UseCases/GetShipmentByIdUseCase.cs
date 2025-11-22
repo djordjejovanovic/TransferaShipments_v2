@@ -1,6 +1,6 @@
 using MediatR;
 using TransferaShipments.Domain.Entities;
-using TransferaShipments.Core.Repositories;
+using AppServices.Contracts.Repositories;
 
 namespace AppServices.UseCases
 {

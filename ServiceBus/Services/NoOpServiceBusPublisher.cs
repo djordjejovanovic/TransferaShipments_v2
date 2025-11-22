@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using AppServices.Contracts.Messaging;
 
 namespace TransferaShipments.ServiceBus.Services;
 
