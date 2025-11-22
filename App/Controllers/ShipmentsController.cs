@@ -15,17 +15,20 @@ public class ShipmentsController : ControllerBase
     private readonly IServiceBusPublisher _busPublisher;
     private readonly IConfiguration _configuration;
     private readonly IMediator _mediator;
+    private readonly ILogger<ShipmentsController> _logger;
 
     public ShipmentsController(
         IBlobService blobService,
         IServiceBusPublisher busPublisher,
         IConfiguration configuration,
-        IMediator mediator)
+        IMediator mediator,
+        ILogger<ShipmentsController> logger)
     {
         _blobService = blobService;
         _busPublisher = busPublisher;
         _configuration = configuration;
         _mediator = mediator;
+        _logger = logger;
     }
 
     [HttpPost("Create")]
@@ -144,7 +147,8 @@ public class ShipmentsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { error = "Failed to upload document", message = ex.Message });
+            _logger.LogError(ex, "Failed to upload document for shipment {ShipmentId}", id);
+            return StatusCode(500, new { error = "Failed to upload document. Please ensure the storage service is running and try again." });
         }
     }
 }
