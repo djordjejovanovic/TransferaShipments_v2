@@ -90,4 +90,3 @@ curl -X POST http://localhost:52752/api/Shipments/1/documents \
 - Ovo je skeleton projekat - cilj je prikazati arhitekturu i integraciju sa Azure servisima
 - Aplikacija podržava lokalni development sa Azurite-om bez potrebe za Azure nalogom
 - NoOp Service Bus publisher omogućava testiranje bez aktivnog Service Bus-a
-- Dodajte autentikaciju, validaciju, logging, unit testove i detaljnije error handling po potrebi
